@@ -1,0 +1,15 @@
+# Editor / OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# Claude Code workspace config (preview server, local launch settings)
+.claude/
+
+# The original single-file version this repo was built from (kept locally only)
+basement - Copy.html
+
+# Logs
+*.log

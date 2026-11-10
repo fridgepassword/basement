@@ -1,0 +1,121 @@
+/* Basement. The game is dark by design, so there is one dark palette. */
+:root{
+  --bg:#070605; --ink:#DCD2BE; --muted:#8A7F6D; --amber:#E2A247; --blood:#8E1B14; --breath:#9DB4A6;
+  --panel:rgba(7,6,5,.92);
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"IM Fell English",Georgia,"Times New Roman",serif;
+  overflow:hidden; touch-action:none;
+  -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
+}
+[hidden]{display:none !important}
+
+#stage{position:relative;width:100%;height:100%;background:#000}
+canvas{display:block;width:100%;height:100%}
+
+/* ---------- overlays (menu, pause, death...) ---------- */
+.overlay{
+  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:1rem; padding:28px; text-align:center; background:var(--panel); overflow-y:auto;
+}
+h1{font-size:clamp(3.2rem,15vw,5.6rem);font-weight:400;letter-spacing:.01em;line-height:.9;margin:0}
+h2{font-size:clamp(2.2rem,10vw,3.4rem);font-weight:400;font-style:italic;margin:0;line-height:1}
+p{margin:0;max-width:24rem;line-height:1.55;font-size:1.12rem}
+.muted{color:var(--muted);font-size:.98rem}
+.row{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center}
+
+button{
+  font:inherit; font-size:1.15rem; cursor:pointer; color:var(--ink); background:transparent;
+  border:1px solid var(--ink); padding:.7rem 1.8rem; border-radius:2px;
+}
+button:hover{background:rgba(220,210,190,.06)}
+button.go{background:var(--blood);border-color:var(--blood);color:#F3E9D6;margin-top:.3rem}
+button.go:hover{background:#A3241B}
+button.small{font-size:.95rem;padding:.45rem 1rem;border-color:var(--muted);color:var(--muted)}
+button.small:hover{color:var(--ink);border-color:var(--ink)}
+button.wide{min-width:16rem}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+
+.nightpick{display:flex;align-items:center;gap:1rem;font-size:1.4rem;font-style:italic}
+.nightpick .arrow{font-size:1.6rem;line-height:1;padding:.1rem .8rem;border-color:var(--muted)}
+.nightpick .arrow:disabled{opacity:.25;cursor:default}
+
+.keys{border-collapse:collapse;font-size:1rem;text-align:left}
+.keys th{font-weight:400;font-style:italic;padding:.3rem 1rem .3rem 0;color:var(--amber)}
+.keys td{padding:.3rem .8rem;color:var(--ink)}
+.keys td+td{color:var(--muted)}
+
+.slider{display:flex;align-items:center;gap:1rem;font-size:1.1rem}
+.slider input{width:12rem;accent-color:var(--blood)}
+
+#journalList{
+  max-width:30rem; max-height:52vh; overflow-y:auto; margin:0; padding:0 1rem 0 2.2rem;
+  text-align:left; line-height:1.5; font-style:italic;
+}
+#journalList li{margin:.55rem 0}
+#journalList li.missing{color:#4A443A;font-style:normal}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:absolute; top:12px; left:16px; right:16px; display:flex; justify-content:space-between; align-items:flex-start;
+  font-size:1.05rem; pointer-events:none; text-shadow:0 1px 2px #000;
+}
+.hud-left{display:flex;flex-direction:column;gap:.35rem}
+#nightLabel{font-style:italic;color:var(--muted);font-size:.95rem}
+.fz{width:8px;height:17px;border:1px solid var(--muted);border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+.fz.on{background:var(--amber);border-color:var(--amber);box-shadow:0 0 6px var(--amber)}
+.hud-right{display:flex;gap:.9rem;align-items:flex-start}
+.meters{display:flex;flex-direction:column;gap:.35rem;align-items:flex-end}
+.meter{display:flex;align-items:center;gap:.5rem;transition:opacity .4s}
+.meter span{font-size:.95rem}
+.bar{width:60px;height:12px;border:1px solid var(--ink);padding:1px;position:relative}
+.bar.battery::after{content:"";position:absolute;right:-5px;top:3px;width:3px;height:4px;background:var(--ink)}
+#batFill{height:100%;width:100%;background:var(--amber)}
+#batRow.off{opacity:.45}
+#stamFill{height:100%;width:100%;background:var(--breath)}
+#stamRow.full{opacity:0}
+#stamRow.winded #stamFill{background:var(--blood)}
+button.icon{
+  pointer-events:auto; font-size:.8rem; letter-spacing:-.1em; padding:.3rem .55rem .3rem .45rem;
+  border-color:rgba(220,210,190,.35); color:rgba(220,210,190,.7); background:rgba(0,0,0,.25);
+}
+
+/* ---------- messages and notes ---------- */
+#msg{
+  position:absolute; left:0; right:0; bottom:13%; text-align:center; padding:0 24px;
+  font-style:italic; font-size:1.2rem; pointer-events:none; opacity:0; transition:opacity .5s; text-shadow:0 1px 3px #000;
+}
+#msg.show{opacity:1}
+#note{
+  position:absolute; left:0; right:0; top:70px; display:flex; justify-content:center; padding:0 20px;
+  pointer-events:none; opacity:0; transform:translateY(-6px); transition:opacity .6s, transform .6s;
+}
+#note.show{opacity:1;transform:none}
+#note .paper{
+  max-width:22rem; padding:.9rem 1.2rem .7rem; background:#CFC3A6; color:#2A1E14;
+  box-shadow:0 6px 24px rgba(0,0,0,.7); transform:rotate(-1.2deg); border-radius:1px;
+  background-image:repeating-linear-gradient(transparent 0 1.45rem, rgba(90,70,50,.18) 1.45rem calc(1.45rem + 1px));
+}
+#note p{font-style:italic;font-size:1.08rem;line-height:1.45rem;max-width:none}
+#note #noteNum{display:block;text-align:right;font-size:.8rem;color:#6B5A44;margin-top:.3rem}
+
+#skip{position:absolute;right:16px;bottom:16px;font-size:.95rem;padding:.4rem 1rem;border-color:var(--muted);color:var(--muted)}
+
+/* ---------- touch buttons (phones and tablets only) ---------- */
+#touch{display:none}
+@media (pointer:coarse){
+  #touch:not([hidden]){position:absolute;right:18px;bottom:22px;display:flex;flex-direction:column;gap:14px}
+  #msg{bottom:190px}
+}
+button.round{
+  width:64px; height:64px; padding:0; border-radius:50%; font-size:.9rem;
+  border-color:rgba(220,210,190,.35); color:rgba(220,210,190,.8); background:rgba(0,0,0,.35);
+}
+button.round.on{border-color:var(--amber);color:var(--amber)}

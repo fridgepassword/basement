@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Basement: a top-down horror game. The power is out. Find the fuses, get to the stairs, and learn the rules of the things in the dark.">
+<meta name="theme-color" content="#070605">
+<title>Basement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" aria-label="Game view"></canvas>
+
+  <!-- In-game HUD -->
+  <div id="hud" hidden>
+    <div class="hud-left">
+      <div id="nightLabel">Night 1</div>
+      <div id="fuses" aria-label="Fuses found"></div>
+    </div>
+    <div class="hud-right">
+      <div class="meters">
+        <div class="meter" id="batRow"><span>Light</span><div class="bar battery"><div id="batFill"></div></div></div>
+        <div class="meter" id="stamRow"><span>Breath</span><div class="bar"><div id="stamFill"></div></div></div>
+      </div>
+      <button id="pauseBtn" class="icon" aria-label="Pause">&#10074;&#10074;</button>
+    </div>
+  </div>
+  <div id="msg" role="status"></div>
+  <div id="note" aria-live="polite"><div class="paper"><p id="noteText"></p><span id="noteNum"></span></div></div>
+  <div id="touch" hidden>
+    <button id="btnMap" class="round" aria-label="Show or hide the map">Map</button>
+    <button id="btnLight" class="round" aria-label="Turn the flashlight on or off">Light</button>
+  </div>
+  <button id="skip" hidden>Skip</button>
+
+  <!-- Main menu -->
+  <div class="overlay" id="menu">
+    <h1>Basement</h1>
+    <p>The power’s out. Something is down there with you. Maybe more than one thing.</p>
+    <p>Find the fuses, then get to the stairs.</p>
+    <div class="nightpick" id="nightPick" hidden>
+      <button class="arrow" id="nPrev" aria-label="Previous night">&lsaquo;</button>
+      <span id="nLabel">Night 1</span>
+      <button class="arrow" id="nNext" aria-label="Next night">&rsaquo;</button>
+    </div>
+    <p class="muted" id="bestLine"></p>
+    <button class="go" id="start">Go downstairs</button>
+    <div class="row">
+      <button class="small" id="helpBtn">How to play</button>
+      <button class="small" id="journalBtn">Journal</button>
+      <button class="small" id="settingsBtn">Settings</button>
+    </div>
+    <p class="muted">Wear headphones. The jump scares are loud and they flash.</p>
+  </div>
+
+  <!-- How to play -->
+  <div class="overlay" id="help" hidden>
+    <h2>How to play</h2>
+    <table class="keys">
+      <tr><th>Walk</th><td>WASD or arrow keys</td><td>Drag anywhere</td></tr>
+      <tr><th>Run</th><td>Hold Shift</td><td>Drag farther</td></tr>
+      <tr><th>Flashlight</th><td>F or Space</td><td>Light button</td></tr>
+      <tr><th>Map</th><td>Hold M or Tab</td><td>Map button</td></tr>
+      <tr><th>Pause</th><td>Esc or P</td><td>&#10074;&#10074; button</td></tr>
+    </table>
+    <p>Your flashlight points where you walk. It drains its battery while it is on. Running is fast, but it is loud and it leaves you out of breath.</p>
+    <p>Each thing down there follows a rule. Learn the rules and you can get past them.</p>
+    <button class="go" data-back>Back</button>
+  </div>
+
+  <!-- Settings -->
+  <div class="overlay" id="settings" hidden>
+    <h2>Settings</h2>
+    <label class="slider">Volume <input type="range" id="vol" min="0" max="100" step="1"></label>
+    <button class="small wide" id="scareToggle" aria-pressed="true">Jump scares: on</button>
+    <button class="small wide" id="fxToggle" aria-pressed="true">Screen shake and glitches: on</button>
+    <button class="small wide" id="resetBtn">Erase saved progress</button>
+    <button class="go" data-back>Back</button>
+  </div>
+
+  <!-- Journal of found notes -->
+  <div class="overlay" id="journal" hidden>
+    <h2>Journal</h2>
+    <p class="muted" id="journalCount"></p>
+    <ol id="journalList"></ol>
+    <button class="go" data-back>Back</button>
+  </div>
+
+  <!-- Pause -->
+  <div class="overlay" id="pause" hidden>
+    <h2>Paused</h2>
+    <p class="muted" id="pauseInfo"></p>
+    <button class="go" id="resume">Resume</button>
+    <div class="row">
+      <button class="small" id="restart">Restart night</button>
+      <button class="small" id="pauseSettings">Settings</button>
+      <button class="small" id="quit">Quit to menu</button>
+    </div>
+  </div>
+
+  <!-- Death -->
+  <div class="overlay" id="dead" hidden>
+    <h2 id="deadTitle">She found you.</h2>
+    <p class="muted" id="deadInfo"></p>
+    <p class="muted" id="deadTip"></p>
+    <button class="go" id="retry">Try again</button>
+    <button class="small" id="deadMenu">Menu</button>
+  </div>
+
+  <!-- Escape -->
+  <div class="overlay" id="won" hidden>
+    <h2 id="wonTitle">You got out.</h2>
+    <p class="muted" id="wonInfo"></p>
+    <p id="wonStory" hidden></p>
+    <button class="go" id="next">Next night</button>
+    <button class="small" id="wonMenu">Menu</button>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
